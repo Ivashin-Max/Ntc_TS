@@ -1,0 +1,37 @@
+import { Tree } from "./binTree";
+import { Paint } from "./domManipulation";
+
+function initApp(): void {
+
+  const tree: Tree<number> = new Tree(null);
+  const paint: Paint = new Paint;
+
+  const input = (document.getElementById("input") as HTMLInputElement);
+  const add = document.getElementById("add");
+  const find = document.getElementById("find");
+
+  add?.addEventListener("click", addLeaf);
+  find?.addEventListener("click", shine);
+
+
+  function addLeaf(): void  {
+    const leafValue = +(input.value);
+    tree.add(leafValue);
+    input.value = "";
+  }
+
+  function shine(): void  {
+    const leaf = tree.checkValue(input.value);
+    if ( !leaf ){
+      alert("Такого элемента нет в дереве");
+      return;
+    }
+    paint.shine(input.value);
+    input.value = "";
+  }
+
+
+}
+
+initApp();
+
