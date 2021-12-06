@@ -1,7 +1,4 @@
 import { Leaf } from "./leaf";
-import { Paint } from "./domManipulation";
-
-const paint: Paint = new Paint;
 
 export class Tree<T> {
 
@@ -12,11 +9,10 @@ export class Tree<T> {
 
    add(value: T): void {
    const newLeaf = new Leaf<T>(value, null, null);
-   const stringValue = `${value}`;
+
 
    if (!this.start) {
      this.start = newLeaf;
-     paint.appendCircle("treeArea", "top", 1, stringValue);
    } else {
      this.addLeaf(this.start, newLeaf, value);
    }
@@ -27,48 +23,15 @@ export class Tree<T> {
     if (double){
       alert("Нельзя вводить повторные значения");
     } else {
-
-
-    const stringValue = `${value}`;
-
     if (newLeaf.value < leaf.value) {
         if (leaf.left === null) {
             leaf.left = newLeaf;
-
-            const currentLevelCount = this.countLevels();
-            const currentDepth = this.findLevel(currentLevelCount, newLeaf.value);
-
-             if (currentDepth){
-              const width = this.findWidth(currentLevelCount, +currentDepth);
-              paint.appendCircle(`${leaf.value}`, "left", currentDepth, stringValue);
-
-              if (width){
-               const currentRowElements = paint.getRowElements(currentDepth);
-               paint.adaptRow(currentRowElements, width, "left");
-              }
-             }
-
         } else {
             this.addLeaf(leaf.left, newLeaf, value);
         }
     } else {
         if (leaf.right === null) {
             leaf.right = newLeaf;
-
-            const currentLevelCount = this.countLevels();
-            const currentDepth = this.findLevel(currentLevelCount, newLeaf.value);
-
-            if (currentDepth){
-              const width = this.findWidth(currentLevelCount, +currentDepth);
-              paint.appendCircle(`${leaf.value}`, "right", currentDepth, stringValue);
-
-              if (width){
-               const currentRowElements = paint.getRowElements(currentDepth);
-               paint.adaptRow(currentRowElements, width, "right");
-              }
-
-            }
-
         } else {
             this.addLeaf(leaf.right, newLeaf, value);
         }
@@ -76,31 +39,67 @@ export class Tree<T> {
   }
 }
 
-private findLevel(tree: T[][], value: T): number | null{
-  for (const [i, element] of Object.entries(tree)){
-    for (const el of element){
-      console.log(i, typeof(i), el, typeof(el));
-      if (el === value){
-        console.log(i, typeof(i));
-        return (Number(i)) + 1;
-    }
+findMinLeaf(leaf: Leaf<T>): Leaf<T> {
+  console.log(`Ищу`, leaf);
+
+  if (leaf.left === null) {
+    console.log(`Нашел`, leaf);
+    return leaf;
   }
+  return this.findMinLeaf(leaf.left);
+}
+
+removeValue(value: T): void {
+  this.start = this.removeLeaf(this.start, value);
+}
+
+removeLeaf(leaf: Leaf<T> | null, value: T): Leaf<T> | null {
+  console.log(`Хотим удалить-${value}, начинаю поиск`);
+  if (leaf === null) {
+    console.log(`leaf === null`);
+      return null;
   }
-  return null;
+  if (value < leaf.value) {
+    console.log(`${value} < ${leaf.value}`);
+      leaf.left = this.removeLeaf(leaf.left, value);
+      return leaf;
+  }
+  if (value > leaf.value) {
+    console.log(`${value} > ${leaf.value}`);
+      leaf.right = this.removeLeaf(leaf.right, value);
+      return leaf;
+  }
+
+      if (leaf.left === null && leaf.right === null) {
+        console.log(`leaf.left === null && leaf.right === null`);
+
+          leaf = null;
+          return leaf;
+      }
+
+      if (leaf.left === null) {
+        console.log(`leaf.left === null`);
+        console.log(`leaf = `, leaf.right);
+          leaf = leaf.right;
+          return leaf;
+      } if (leaf.right === null) {
+        console.log(`leaf.right === null`);
+        console.log(`leaf = `, leaf.left);
+          leaf = leaf.left;
+          return leaf;
+      }
+
+      const newleaf = this.findMinLeaf(leaf.right);
+      console.log(`Search min Leaf, min leaf = `, newleaf);
+      leaf.value = newleaf.value;
+      leaf.right = this.removeLeaf(leaf.right, newleaf.value);
+      return leaf;
 }
 
 
-
-private findWidth(tree: T[][], level: number): number | null{
-  for (const [i, element] of Object.entries(tree)){
-    if ((Number(i)) + 1 === level){
-     return element.length;
-    }
-  }
-  return null;
-}
  checkValue(value: unknown): boolean{
-  const allLeafs = [...this.countLevels()];
+  const allLeafs = this.countLevels().flat();
+
   for (const leaf of allLeafs) {
     if (Number(value) === Number(leaf)){
       return true;
@@ -109,7 +108,7 @@ private findWidth(tree: T[][], level: number): number | null{
   return false;
 }
 
-private countLevels(): [][] | T[][] {
+ countLevels(): [][] | T[][] {
    console.log("countLevels-----------");
     const levels: T[][] = [];
 
@@ -146,5 +145,7 @@ private countLevels(): [][] | T[][] {
    return levels;
 }
 }
+
+
 
 

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "eslint": "eslint \"./src/**/*.ts\"",
-    "buildDev": "rimraf ./dist && gulp --gulpfile ./gulp/gulpfileDEV.cjs",
+    "buildDev": " gulp --gulpfile ./gulp/gulpfileDEV.cjs",
     "buildAndStart": "rimraf ./dist && gulp --gulpfile ./gulp/gulpfile.cjs"
   },
   "devDependencies": {
