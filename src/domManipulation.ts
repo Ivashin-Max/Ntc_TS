@@ -13,8 +13,8 @@ export class Paint {
 
   paintTree(tree: [][] | number[][]): void{
     for (const [i, array] of Object.entries(tree)){
-      console.log(i, typeof(i));
-      console.log(`Уровень-${i}, внутри -`, array);
+      // console.log(i, typeof(i));
+      // console.log(`Уровень-${i}, внутри -`, array);
       this.createRow(+i);
       this.fillRow(+i, array);
     }
